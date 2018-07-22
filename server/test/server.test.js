@@ -100,7 +100,7 @@ describe('DELETE /todos/:id', () => {
                 if(err)
                     return done(err);
                 Todo.findById(todos[0]._id).then((todo) => {
-                    expect(todo).toNotExist();
+                    expect(todo).not.toBeTruthy();
                     done();
                 }).catch((e) => done(e));
           });
@@ -137,7 +137,7 @@ describe('PATCH /todos/:id', () => {
             Todo.findById(hexID).then((todo) => {
                 expect(todo.text).toBe('do homework');
                 expect(todo.completed).toBe(true);
-                expect(todo.completedAt).toBeA('number');
+                expect(typeof todo.completedAt).toBe('number');
                 done();
             }).catch((e) => done(e));
           });
@@ -150,7 +150,7 @@ describe('PATCH /todos/:id', () => {
           .expect(200)
           .expect((res) => {
               expect(res.body.todo.completed).toBe(false);
-              expect(res.body.completedAt).toNotExist();
+              expect(res.body.completedAt).not.toBeTruthy();
           })
           .end(done);
     });
@@ -182,7 +182,7 @@ describe('GET /users/me', () => {
 
 describe('POST /users', () => {
     it('should create a user', (done) => {
-        var email = 'test@gmail.com';
+        var email = 'example@example.com';
         var password = 'testpassword';
 
         request(app)
@@ -190,7 +190,8 @@ describe('POST /users', () => {
           .send({email, password})
           .expect(200)
           .expect((res) => {
-              expect(res.headers['x-auth']).toExist();
+              expect(res.headers['x-auth']).toBeTruthy();
+              expect(res.body._id).toBeTruthy();
               expect(res.body.email).toBe(email);
           })
           .end(((err) => {
@@ -198,8 +199,8 @@ describe('POST /users', () => {
                   return done(err);
               }
               User.findOne({email}).then((user) => {
-                  expect(user).toExist();
-                  expect(user.password).toNotBe(password);
+                  expect(user).toBeTruthy();
+                  expect(user.password).not.toBe(password);
                   done();
               })
           }));
