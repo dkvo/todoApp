@@ -118,7 +118,7 @@ describe('DELETE /todos/:id', () => {
                 if(err)
                     return done(err);
                 Todo.findById(hexID).then((todo) => {
-                    expect(todo).not.toBeTruthy();
+                    expect(todo).toBeFalsy();
                     done();
                 }).catch((e) => done(e));
           });
@@ -196,7 +196,7 @@ describe('PATCH /todos/:id', () => {
             Todo.findById(hexID).then((todo) => {
                 expect(todo.text).toBe(todos[0].text);
                 expect(todo.completed).toBe(false);
-                expect(todo.completedAt).not.toBeTruthy();
+                expect(todo.completedAt).toBeFalsy();
                 done();
             }).catch((e) => done(e));
           });
@@ -210,7 +210,7 @@ describe('PATCH /todos/:id', () => {
           .expect(200)
           .expect((res) => {
               expect(res.body.todo.completed).toBe(false);
-              expect(res.body.completedAt).not.toBeTruthy();
+              expect(res.body.completedAt).toBeFalsy();
           })
           .end(done);
     });
@@ -302,7 +302,7 @@ describe('POST /users/login', () => {
               if(err)
                 return done(err);
               User.findById(users[1]._id).then((user) => {
-                  expect(user.tokens[1]).toMatchObject({
+                  expect(user.toObject().tokens[1]).toMatchObject({
                       'access': 'auth',
                       'token': res.headers['x-auth']
                   });
@@ -320,7 +320,7 @@ describe('POST /users/login', () => {
           })
           .expect(400)
           .expect((res) => {
-              expect(res.headers['x-auth']).not.toBeTruthy();
+              expect(res.headers['x-auth']).toBeFalsy();
           })
           .end((err, res) => {
               if(err)
